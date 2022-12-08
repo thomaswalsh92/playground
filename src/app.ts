@@ -32,5 +32,8 @@ export const app = () => {
     scene.add(block.block);
   });
 
+  const selectedBlock = mainGrid.getBlockAtCoords(1, 5);
+  selectedBlock.setMode("logic");
+  console.log(selectedBlock);
   animate();
 };
