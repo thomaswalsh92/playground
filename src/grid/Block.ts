@@ -8,16 +8,18 @@ import {
   MeshBasicMaterial,
 } from "three";
 
+type Mode = "ghost" | "send" | "receive" | "logic";
 export class Block {
-  constructor(xCoord: number, zCoord: number) {
+  constructor(xCoord: number, zCoord: number, mode: Mode) {
     this.xCoord = xCoord;
     this.zCoord = zCoord;
+    this.mode = mode;
   }
 
   xCoord: number;
   zCoord: number;
   block: Mesh<BoxGeometry, MeshBasicMaterial>;
-
+  mode: Mode;
   create = () => {
     const color = new Color("#4f94bc");
     const mat = new MeshBasicMaterial({ color: color });
@@ -31,5 +33,17 @@ export class Block {
     const zOffset = this.zCoord;
     cube.position.set(xOffset, 0, zOffset);
     this.block = cube;
+  };
+  makeGhost = () => {
+    this.mode = "ghost";
+  };
+  makeSend = () => {
+    this.mode = "send";
+  };
+  makeReceive = () => {
+    this.mode = "receive";
+  };
+  makeLogic = () => {
+    this.mode = "logic";
   };
 }
