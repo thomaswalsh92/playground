@@ -1,5 +1,4 @@
-//render will go in here, all other functionality will be imported.
-//app will be run from index.ts
+import react from "react";
 
 import { Scene, WebGLRenderer } from "three";
 import { camera } from "./camera/camera";
@@ -8,7 +7,7 @@ import { Block } from "./grid/Block";
 import Synthesiser from "./synthesiser/Synthesiser";
 import { MonoSynth } from "tone";
 
-export const app = () => {
+export const App = () => {
   const scene = new Scene();
   const mainCamera = camera();
 
@@ -50,4 +49,7 @@ export const app = () => {
 
   synth.triggerAttackRelease("C4", "8n");
   animate();
+  return <p>Hello world</p>;
 };
+
+export default App;
