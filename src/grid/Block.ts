@@ -18,8 +18,9 @@ export class Block {
 
   xCoord: number;
   zCoord: number;
-  block: Mesh<BoxGeometry, MeshBasicMaterial>;
+  mesh: Mesh<BoxGeometry, MeshBasicMaterial>;
   mode: Mode;
+
   color = () => {
     if (this.mode === "ghost") {
       return new Color("#FDFFFC");
@@ -34,6 +35,7 @@ export class Block {
       return new Color("#F1D302");
     }
   };
+
   create = () => {
     const mat = new MeshBasicMaterial({ color: this.color() });
     const edgesMat = new LineBasicMaterial({ color: 0x000000 });
@@ -45,10 +47,11 @@ export class Block {
     const xOffset = this.xCoord;
     const zOffset = this.zCoord;
     cube.position.set(xOffset, 0, zOffset);
-    this.block = cube;
+    this.mesh = cube;
   };
+
   setMode = (mode: Mode) => {
     this.mode = mode;
-    this.block.material.color.set(this.color());
+    this.mesh.material.color.set(this.color());
   };
 }
