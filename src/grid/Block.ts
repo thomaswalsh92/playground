@@ -14,11 +14,12 @@ class Block {
     this.xCoord = xCoord;
     this.zCoord = zCoord;
     this.mode = mode;
+    this.mesh = this.create();
   }
 
   xCoord: number;
   zCoord: number;
-  //mesh: Mesh<BoxGeometry, MeshBasicMaterial>;
+  mesh: Mesh<BoxGeometry, MeshBasicMaterial>;
   mode: Mode;
 
   color = () => {
@@ -34,6 +35,7 @@ class Block {
     if (this.mode === "logic") {
       return new Color("#F1D302");
     }
+    return new Color("#FFFFFF");
   };
 
   create = () => {
@@ -47,12 +49,12 @@ class Block {
     const xOffset = this.xCoord;
     const zOffset = this.zCoord;
     cube.position.set(xOffset, 0, zOffset);
-    // this.mesh = cube;
+    return cube;
   };
 
   setMode = (mode: Mode) => {
     this.mode = mode;
-    // this.mesh.material.color.set(this.color());
+    this.mesh.material.color.set(this.color());
   };
 }
 
