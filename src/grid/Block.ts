@@ -9,7 +9,7 @@ import {
 } from "three";
 
 type Mode = "ghost" | "send" | "receive" | "logic";
-export class Block {
+class Block {
   constructor(xCoord: number, zCoord: number, mode: Mode) {
     this.xCoord = xCoord;
     this.zCoord = zCoord;
@@ -18,7 +18,7 @@ export class Block {
 
   xCoord: number;
   zCoord: number;
-  mesh: Mesh<BoxGeometry, MeshBasicMaterial>;
+  //mesh: Mesh<BoxGeometry, MeshBasicMaterial>;
   mode: Mode;
 
   color = () => {
@@ -47,11 +47,13 @@ export class Block {
     const xOffset = this.xCoord;
     const zOffset = this.zCoord;
     cube.position.set(xOffset, 0, zOffset);
-    this.mesh = cube;
+    // this.mesh = cube;
   };
 
   setMode = (mode: Mode) => {
     this.mode = mode;
-    this.mesh.material.color.set(this.color());
+    // this.mesh.material.color.set(this.color());
   };
 }
+
+export default Block;
