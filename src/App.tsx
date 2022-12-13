@@ -3,7 +3,7 @@
 import { Scene, WebGLRenderer } from "three";
 import { camera } from "./camera/camera";
 import { Grid } from "./grid/Grid";
-import { MonoSynth } from "tone";
+import { start, MonoSynth, Loop, Transport } from "tone";
 
 export const App = () => {
   const scene = new Scene();
@@ -26,36 +26,43 @@ export const App = () => {
   };
 
   const mainGrid = new Grid(16, 16);
-  mainGrid.create();
   mainGrid.shift(-7, -7);
   mainGrid.grid.forEach((block) => {
     scene.add(block.mesh);
   });
 
-  const selectedBlock = mainGrid.getBlockAtCoords(15, 15);
-  selectedBlock && selectedBlock.setMode("logic");
-  console.log(selectedBlock);
+  const sendBlock = mainGrid.getBlockAtCoords(0, 0);
+  sendBlock && sendBlock.setMode("send");
 
-  const selectedBlock3 = mainGrid.getBlockAtCoords(4, 12);
-  selectedBlock3 && selectedBlock3.setMode("receive");
+  Transport.bpm.value = 120;
 
-  const synth = new MonoSynth({
-    oscillator: {
-      type: "square",
-    },
-    envelope: {
-      attack: 0.1,
-    },
-  }).toDestination();
+  Transport.start();
+
+  //the loop needs to run every tick and do the following:
+  //check if a block is ready to send;
+  //createNotes at block pos where send is ready'
+  //updateIntervalsForBlocks;
+
+  let count = 0;
+  const loop = new Loop((time) => {
+    // triggered every eighth note.
+    mainGrid.makeNotes(count);
+    mainGrid.moveNotes();
+    mainGrid.highlightNotes();
+    count++;
+  }, "4n").start(0);
+  Transport.start();
 
   animate();
   return (
     <>
       <button
         style={{ position: "fixed" }}
-        onClick={() => synth.triggerAttackRelease("C4", "8n")}
+        onClick={() => {
+          start();
+        }}
       >
-        Press me
+        Start
       </button>
     </>
   );

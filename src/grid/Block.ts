@@ -6,24 +6,32 @@ import {
   LineSegments,
   Mesh,
   MeshBasicMaterial,
+  Vector3,
 } from "three";
 
 type Mode = "ghost" | "send" | "receive" | "logic";
+
 class Block {
-  constructor(xCoord: number, zCoord: number, mode: Mode) {
-    this.xCoord = xCoord;
-    this.zCoord = zCoord;
+  constructor(posX: number, posZ: number, mode: Mode) {
+    this.posX = posX;
+    this.posZ = posZ;
     this.mode = mode;
     this.mesh = this.create();
+    this.sendInterval = 4;
+    this.sendDirection = new Vector3(1, 0, 0);
+    this.highlight = false;
   }
 
-  xCoord: number;
-  zCoord: number;
+  posX: number;
+  posZ: number;
   mesh: Mesh<BoxGeometry, MeshBasicMaterial>;
   mode: Mode;
+  sendInterval: number;
+  sendDirection: Vector3;
+  highlight: boolean;
 
   color = () => {
-    if (this.mode === "ghost") {
+    if (this.mode === "ghost" && !this.highlight) {
       return new Color("#FDFFFC");
     }
     if (this.mode === "send") {
@@ -34,6 +42,9 @@ class Block {
     }
     if (this.mode === "logic") {
       return new Color("#F1D302");
+    }
+    if (this.highlight) {
+      return new Color("#FFA500");
     }
     return new Color("#FFFFFF");
   };
@@ -46,14 +57,19 @@ class Block {
     const edges = new EdgesGeometry(cube.geometry);
     const wireframe = new LineSegments(edges, edgesMat);
     cube.add(wireframe);
-    const xOffset = this.xCoord;
-    const zOffset = this.zCoord;
+    const xOffset = this.posX;
+    const zOffset = this.posZ;
     cube.position.set(xOffset, 0, zOffset);
     return cube;
   };
 
   setMode = (mode: Mode) => {
     this.mode = mode;
+    this.mesh.material.color.set(this.color());
+  };
+
+  setHighlight = (bool: boolean) => {
+    this.highlight = bool;
     this.mesh.material.color.set(this.color());
   };
 }
