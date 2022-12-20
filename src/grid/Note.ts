@@ -1,22 +1,30 @@
 import { Vector2, Vector3 } from "three";
 import { generateUUID } from "three/src/math/MathUtils";
+import { mainGrid } from "../App";
+import Block, { SendBlock } from "./Block";
 import { Grid } from "./Grid";
 
 export default class Note {
-  constructor(posX: number, posZ: number, dir: Vector3) {
+  constructor(position: Vector3, dir: Vector3) {
     this.id = generateUUID();
-    this.posX = posX;
-    this.posZ = posZ;
+    this.position = position;
     this.direction = dir;
+    this.block = undefined;
   }
 
   id: string;
-  posX: number;
-  posZ: number;
+  position: Vector3;
   direction: Vector3;
+  block?: Block;
+
+  onTick = () => {};
 
   move = () => {
-    this.posX = this.posX + this.direction.x;
-    this.posZ = this.posZ + this.direction.z;
+    this.position.x = this.position.x + this.direction.x;
+    this.position.z = this.position.z + this.direction.z;
+  };
+
+  addToBlock = () => {
+    mainGrid.blocks[this.position.x][this.position.z].addNoteToBlock(this);
   };
 }

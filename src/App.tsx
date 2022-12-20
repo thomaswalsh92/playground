@@ -1,9 +1,12 @@
 // import react from "react";
 
-import { Scene, WebGLRenderer } from "three";
+import { Scene, Vector3, WebGLRenderer } from "three";
 import { camera } from "./camera/camera";
 import { Grid } from "./grid/Grid";
 import { start, MonoSynth, Loop, Transport } from "tone";
+import Note from "./grid/Note";
+
+export const mainGrid = new Grid(16, 16);
 
 export const App = () => {
   const scene = new Scene();
@@ -25,14 +28,10 @@ export const App = () => {
     renderer.render(scene, mainCamera);
   };
 
-  const mainGrid = new Grid(16, 16);
-  mainGrid.shift(-7, -7);
-  mainGrid.grid.forEach((block) => {
-    scene.add(block.mesh);
-  });
-
-  const sendBlock = mainGrid.getBlockAtCoords(0, 0);
-  sendBlock && sendBlock.setMode("send");
+  const note = new Note(new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+  const block = mainGrid.blocks[0][0];
+  block.addNoteToBlock(note);
+  console.log(mainGrid);
 
   Transport.bpm.value = 120;
 
@@ -46,9 +45,9 @@ export const App = () => {
   let count = 0;
   const loop = new Loop((time) => {
     // triggered every eighth note.
-    mainGrid.makeNotes(count);
-    mainGrid.moveNotes();
-    mainGrid.highlightNotes();
+    // mainGrid.makeNotes(count);
+    // mainGrid.moveNotes();
+    // mainGrid.highlightNotes();
     count++;
   }, "4n").start(0);
   Transport.start();
