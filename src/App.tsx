@@ -4,9 +4,9 @@ import { Scene, Vector3, WebGLRenderer } from "three";
 import { camera } from "./camera/camera";
 import { Grid } from "./grid/Grid";
 import { start, MonoSynth, Loop, Transport } from "tone";
-import Note from "./grid/Note";
 
-export const mainGrid = new Grid(16, 16);
+export const gridDim = 16;
+export const mainGrid = new Grid(gridDim, gridDim);
 
 export const App = () => {
   const scene = new Scene();
@@ -28,13 +28,7 @@ export const App = () => {
     renderer.render(scene, mainCamera);
   };
 
-  const note = new Note(new Vector3(0, 0, 0), new Vector3(0, 0, 0));
-  const block = mainGrid.blocks[0][0];
-  block.addNoteToBlock(note);
-  console.log(mainGrid);
-
   Transport.bpm.value = 120;
-
   Transport.start();
 
   //the loop needs to run every tick and do the following:
@@ -42,15 +36,51 @@ export const App = () => {
   //createNotes at block pos where send is ready'
   //updateIntervalsForBlocks;
 
+  Transport.start();
+
+  const send1 = mainGrid.blocks[0][0];
+  send1.setMode("send");
+
+  const send2 = mainGrid.getBlockAtPos(4, 5);
+  send2 && send2.setMode("send");
+
+  //add all meshes to render ->
+  //loops through main grid and renders all blocks
+  for (let i = 0; i < mainGrid.blocks.length; i++) {
+    for (let j = 0; j < mainGrid.blocks[i].length; j++) {
+      scene.add(mainGrid.blocks[i][j].mesh);
+    }
+  }
+
+  //renders all notes
+  for (const note in mainGrid.notes) {
+    console.log(note);
+    scene.add(mainGrid.notes[note].mesh);
+  }
+
   let count = 0;
   const loop = new Loop((time) => {
-    // triggered every eighth note.
-    // mainGrid.makeNotes(count);
-    // mainGrid.moveNotes();
-    // mainGrid.highlightNotes();
+    mainGrid.tick = count;
+    console.log(mainGrid.tick);
+    for (const row of mainGrid.blocks) {
+      for (const block of row) {
+        if (block.mode === "send") {
+          block.createNote();
+        }
+      }
+    }
+    for (const noteId in mainGrid.notes) {
+      const note = mainGrid.notes[noteId];
+      if (mainGrid.getBlockAtPos(note.position.x, note.position.z)) {
+        note.update();
+      } else {
+        note.remove();
+        scene.remove(note.mesh);
+      }
+    }
+    console.log(mainGrid.notes);
     count++;
   }, "4n").start(0);
-  Transport.start();
 
   animate();
   return (

@@ -8,12 +8,14 @@ export class Grid {
     this.z = z;
     this.blocks = this.initBlocks();
     this.notes = {};
+    this.tick = 0;
   }
 
   x: number;
   z: number;
   blocks: Block[][];
   notes: { [key: string]: Note };
+  tick: number;
 
   initBlocks = () => {
     const arr: Block[][] = [];
@@ -27,5 +29,12 @@ export class Grid {
     }
     console.log(arr);
     return arr;
+  };
+
+  getBlockAtPos = (x: number, z: number) => {
+    if (x < this.x && z < this.x) {
+      return this.blocks[x][z];
+    }
+    return undefined;
   };
 }
