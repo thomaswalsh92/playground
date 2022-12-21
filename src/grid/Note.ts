@@ -1,15 +1,7 @@
-import {
-  Mesh,
-  MeshBasicMaterial,
-  Scene,
-  SphereGeometry,
-  Vector2,
-  Vector3,
-} from "three";
+import { Mesh, MeshBasicMaterial, SphereGeometry, Vector3 } from "three";
 import { generateUUID } from "three/src/math/MathUtils";
 import { mainGrid, scene } from "../App";
 import Block from "./Block";
-import { Grid } from "./Grid";
 
 export default class Note {
   constructor(position: Vector3, dir: Vector3) {
@@ -30,7 +22,7 @@ export default class Note {
 
   initMesh = () => {
     const mat = new MeshBasicMaterial({ color: "#084887" });
-    const geo = new SphereGeometry(0.4);
+    const geo = new SphereGeometry(0.3);
     const sphere = new Mesh(geo, mat);
     sphere.name = "note";
     sphere.uuid = this.id;

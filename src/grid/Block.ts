@@ -75,7 +75,6 @@ export default class Block {
 
   //send methods
   createNote = () => {
-    console.log(mainGrid.tick);
     if (this.mode !== "send") {
       console.log("Block is not in send mode");
       return;

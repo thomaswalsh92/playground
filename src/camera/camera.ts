@@ -3,7 +3,7 @@
 import { OrthographicCamera } from "three/src/cameras/OrthographicCamera";
 
 export const camera = (): OrthographicCamera => {
-  const d = 12;
+  const d = 20;
   const pos = 120;
   const aspect = window.innerWidth / window.innerHeight;
   const cam = new OrthographicCamera(-d * aspect, d * aspect, d, -d, 1, 1000);

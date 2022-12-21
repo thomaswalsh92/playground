@@ -4,10 +4,9 @@ import { Scene, Vector3, WebGLRenderer } from "three";
 import { camera } from "./camera/camera";
 import { Grid } from "./grid/Grid";
 import { start, MonoSynth, Loop, Transport } from "tone";
-import Note from "./grid/Note";
 
-//global variables
-export const gridDim = 16;
+//! global variables, these may be accessed by classes !//
+export const gridDim = 32;
 export const mainGrid = new Grid(gridDim, gridDim);
 export const scene = new Scene();
 
@@ -30,7 +29,7 @@ export const App = () => {
     renderer.render(scene, mainCamera);
   };
 
-  Transport.bpm.value = 120;
+  Transport.bpm.value = 70;
   Transport.start();
 
   //the loop needs to run every tick and do the following:
@@ -84,7 +83,6 @@ export const App = () => {
     mainGrid.cleanUpNotes();
     mainGrid.updateNotes();
     mainGrid.createNotes();
-    const notesThisTick = mainGrid.getNotesArray();
     // addNotesToScene(notesThisTick);
     // removeNotesFromScene(notesThisTick);
     //every tick we get the list of current active notes,
@@ -93,7 +91,7 @@ export const App = () => {
     //notes in the scene not currently in the notes array are removed.
 
     count++;
-  }, "4n").start(0);
+  }, "16n").start(0);
 
   animate();
   return (
