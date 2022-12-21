@@ -4,12 +4,14 @@ import { Scene, Vector3, WebGLRenderer } from "three";
 import { camera } from "./camera/camera";
 import { Grid } from "./grid/Grid";
 import { start, MonoSynth, Loop, Transport } from "tone";
+import Note from "./grid/Note";
 
+//global variables
 export const gridDim = 16;
 export const mainGrid = new Grid(gridDim, gridDim);
+export const scene = new Scene();
 
 export const App = () => {
-  const scene = new Scene();
   const mainCamera = camera();
 
   const renderer = new WebGLRenderer({ antialias: true });
@@ -39,10 +41,21 @@ export const App = () => {
   Transport.start();
 
   const send1 = mainGrid.blocks[0][0];
-  send1.setMode("send");
+  send1.updateSend(3, new Vector3(1, 0, 0));
+  const send2 = mainGrid.blocks[2][5];
+  send2.updateSend(6, new Vector3(1, 0, 0));
+  const send3 = mainGrid.blocks[0][7];
+  send3.updateSend(5, new Vector3(0, 0, 1));
+  const send4 = mainGrid.blocks[15][15];
+  send4.updateSend(2, new Vector3(0, 0, -1));
+  const send5 = mainGrid.blocks[13][13];
+  send5.updateSend(4, new Vector3(-1, 0, 0));
 
-  const send2 = mainGrid.getBlockAtPos(4, 5);
-  send2 && send2.setMode("send");
+  // const send4 = mainGrid.blocks[15][15];
+  // send4.updateSend(1, new Vector3(-1, 0, 0));
+
+  // const send2 = mainGrid.getBlockAtPos(4, 5);
+  // send2 && send2.setMode("send");
 
   //add all meshes to render ->
   //loops through main grid and renders all blocks
@@ -52,33 +65,33 @@ export const App = () => {
     }
   }
 
-  //renders all notes
-  for (const note in mainGrid.notes) {
-    console.log(note);
-    scene.add(mainGrid.notes[note].mesh);
-  }
+  // const addNotesToScene = (notes: Note[]): void => {
+  //   notes.forEach((note) => {
+  //     scene.add(note.mesh);
+  //   });
+  // };
 
+  // const removeNotesFromScene = (notes: Note[]): void => {
+  //   const notesInScene = scene.children.filter((child) => {
+  //     if (child.name === "note" && notes.indexOf(child.uuid) {
+  //       return child;
+  //     }
+  //   });
+  // };
   let count = 0;
   const loop = new Loop((time) => {
     mainGrid.tick = count;
-    console.log(mainGrid.tick);
-    for (const row of mainGrid.blocks) {
-      for (const block of row) {
-        if (block.mode === "send") {
-          block.createNote();
-        }
-      }
-    }
-    for (const noteId in mainGrid.notes) {
-      const note = mainGrid.notes[noteId];
-      if (mainGrid.getBlockAtPos(note.position.x, note.position.z)) {
-        note.update();
-      } else {
-        note.remove();
-        scene.remove(note.mesh);
-      }
-    }
-    console.log(mainGrid.notes);
+    mainGrid.cleanUpNotes();
+    mainGrid.updateNotes();
+    mainGrid.createNotes();
+    const notesThisTick = mainGrid.getNotesArray();
+    // addNotesToScene(notesThisTick);
+    // removeNotesFromScene(notesThisTick);
+    //every tick we get the list of current active notes,
+    //and compare against the meshes that are in the scene.
+    //Notes not in the scene are added.
+    //notes in the scene not currently in the notes array are removed.
+
     count++;
   }, "4n").start(0);
 

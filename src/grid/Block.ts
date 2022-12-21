@@ -20,7 +20,7 @@ export default class Block {
     this.mesh = this.initMesh();
     this.mode = "ghost";
     this.sendDirection = new Vector3(1, 0, 0);
-    this.sendInterval = 2;
+    this.sendInterval = 6;
   }
 
   mode: Mode;
@@ -44,14 +44,14 @@ export default class Block {
     return cube;
   };
 
-  setMode = (mode: Mode) => {
-    if (mode === this.mode) {
-      console.log(`Block already set as ${mode} block`);
-      return;
-    }
-    this.mode = mode;
-    this.setColor();
-  };
+  // setMode = (mode: Mode) => {
+  //   if (mode === this.mode) {
+  //     console.log(`Block already set as ${mode} block`);
+  //     return;
+  //   }
+  //   this.mode = mode;
+  //   this.setColor();
+  // };
 
   setColor = () => {
     if (this.mode === "ghost") {
@@ -75,13 +75,21 @@ export default class Block {
 
   //send methods
   createNote = () => {
+    console.log(mainGrid.tick);
     if (this.mode !== "send") {
       console.log("Block is not in send mode");
       return;
     }
-    if (this.mode === "send" && this.sendInterval % mainGrid.tick === 0) {
+    if (this.mode === "send" && mainGrid.tick % this.sendInterval === 0) {
       const newNote = new Note(this.position, this.sendDirection);
       mainGrid.notes[newNote.id] = newNote;
     }
+  };
+
+  updateSend = (sendInterval: number, sendDirection: Vector3) => {
+    this.mode = "send";
+    this.sendInterval = sendInterval;
+    this.sendDirection = sendDirection;
+    this.setColor();
   };
 }

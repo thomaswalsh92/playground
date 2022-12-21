@@ -1,12 +1,13 @@
 import {
   Mesh,
   MeshBasicMaterial,
+  Scene,
   SphereGeometry,
   Vector2,
   Vector3,
 } from "three";
 import { generateUUID } from "three/src/math/MathUtils";
-import { mainGrid } from "../App";
+import { mainGrid, scene } from "../App";
 import Block from "./Block";
 import { Grid } from "./Grid";
 
@@ -31,17 +32,25 @@ export default class Note {
     const mat = new MeshBasicMaterial({ color: "#084887" });
     const geo = new SphereGeometry(0.4);
     const sphere = new Mesh(geo, mat);
+    sphere.name = "note";
+    sphere.uuid = this.id;
     sphere.position.set(
       this.position.x,
       this.position.y + this.yOffset,
       this.position.z
     );
+    scene.add(sphere);
     return sphere;
   };
 
   move = () => {
-    this.position.x = this.position.x + this.direction.x;
-    this.position.z = this.position.z + this.direction.z;
+    const { position, direction } = this;
+    const newPos: Vector3 = new Vector3(
+      position.x + direction.x,
+      0,
+      position.z + direction.z
+    );
+    this.position = newPos;
   };
 
   update = () => {
@@ -50,24 +59,15 @@ export default class Note {
 
     //complete all actions if the note is still in the grid
     if (mainGrid.getBlockAtPos(posX, posZ)) {
-      this.mesh.position.set(
-        this.position.x,
-        this.position.y + this.yOffset,
-        this.position.z
-      );
+      this.mesh.position.set(posX, this.position.y + this.yOffset, posZ);
       this.move();
     }
   };
 
   remove = () => {
+    this.mesh.geometry.dispose();
+    this.mesh.material.dispose();
     delete mainGrid.notes[this.id];
-  };
-
-  addBlockToNote = (block: Block) => {
-    this.block = block;
-  };
-
-  removeBlockFromNote = () => {
-    this.block = undefined;
+    scene.remove(this.mesh);
   };
 }

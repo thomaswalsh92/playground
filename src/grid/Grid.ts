@@ -27,14 +27,54 @@ export class Grid {
       }
       arr.push(columnArr);
     }
-    console.log(arr);
     return arr;
   };
 
   getBlockAtPos = (x: number, z: number) => {
-    if (x < this.x && z < this.x) {
+    if (x < this.x && x >= 0 && z < this.z && z >= 0) {
       return this.blocks[x][z];
     }
     return undefined;
+  };
+
+  //todo note this flattens the array in the order of z 0 - end, x 0 - end
+  getBlocksArray = () => {
+    return this.blocks.flat(2);
+  };
+
+  getNotesArray = () => {
+    const arr = [];
+    const { notes } = this;
+    for (let noteId in notes) {
+      arr.push(notes[noteId]);
+    }
+    return arr;
+  };
+
+  //todo naive way of sending blocks tbh
+  createNotes = () => {
+    this.getBlocksArray().forEach((block) => {
+      if (block.mode === "send") {
+        block.createNote();
+      }
+    });
+  };
+
+  updateNotes = () => {
+    const { notes } = this;
+    for (let noteId in notes) {
+      notes[noteId].update();
+    }
+  };
+
+  cleanUpNotes = () => {
+    const { notes } = this;
+    for (let noteId in notes) {
+      const note = notes[noteId];
+      if (!this.getBlockAtPos(note.position.x, note.position.z)) {
+        note.remove();
+        note.mesh.remove();
+      }
+    }
   };
 }
