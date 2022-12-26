@@ -52,6 +52,7 @@ export default class Note {
     //complete all actions if the note is still in the grid
     if (mainGrid.getBlockAtPos(posX, posZ)) {
       this.mesh.position.set(posX, this.position.y + this.yOffset, posZ);
+      this.block = mainGrid.blocks[posX][posZ];
       this.move();
     }
   };
