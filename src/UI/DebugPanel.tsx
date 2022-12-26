@@ -2,10 +2,7 @@ import { Box, FormControlLabel, Switch, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { mainGrid } from "../App";
 
-interface IDebugPanelProps {
-  tick?: number;
-}
-const DebugPanel = ({ tick }: IDebugPanelProps) => {
+const DebugPanel = () => {
   const [debugOpen, setDebugOpen] = useState<boolean>(false);
 
   return (
@@ -19,7 +16,7 @@ const DebugPanel = ({ tick }: IDebugPanelProps) => {
 
       {debugOpen && (
         <Box>
-          <Typography variant="body1">Tick: {tick}</Typography>
+          <Typography variant="body1">Debug will go here</Typography>
         </Box>
       )}
     </Box>

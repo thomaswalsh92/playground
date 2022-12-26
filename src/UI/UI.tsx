@@ -1,17 +1,20 @@
-import { Box } from "@mui/material";
+import { Paper } from "@mui/material";
 import DebugPanel from "./DebugPanel";
 import TransportControl from "./TransportControl";
 
-interface IUIProps {
-  tick?: number;
-}
-
-const UI = ({ tick }: IUIProps) => {
+const UI = () => {
   return (
-    <Box sx={{ position: "fixed", p: 2 }}>
+    <Paper
+      elevation={2}
+      sx={{
+        position: "fixed",
+        m: 2,
+        p: 2,
+      }}
+    >
       <TransportControl />
-      <DebugPanel tick={tick} />
-    </Box>
+      <DebugPanel />
+    </Paper>
   );
 };
 
