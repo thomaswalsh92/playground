@@ -1,8 +1,14 @@
 import { Paper } from "@mui/material";
+import { Vector3 } from "three";
+import BlockPanel from "./BlockPanel";
 import DebugPanel from "./DebugPanel";
 import TransportControl from "./TransportControl";
 
-const UI = () => {
+interface IUIProps {
+  selectedBlock?: Vector3;
+}
+
+const UI = ({ selectedBlock }: IUIProps) => {
   return (
     <Paper
       elevation={2}
@@ -13,6 +19,7 @@ const UI = () => {
       }}
     >
       <TransportControl />
+      <BlockPanel />
       <DebugPanel />
     </Paper>
   );

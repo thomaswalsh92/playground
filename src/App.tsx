@@ -1,20 +1,17 @@
-// import react from "react";
-
-import {
-  Mesh,
-  MeshBasicMaterial,
-  Raycaster,
-  Scene,
-  SphereGeometry,
-  Vector2,
-  Vector3,
-  WebGLRenderer,
-} from "three";
+//three
+import { Raycaster, Scene, Vector2, Vector3, WebGLRenderer } from "three";
 import { camera } from "./camera/camera";
-import { Grid } from "./grid/Grid";
+
+//tone
 import { Loop, Transport } from "tone";
+
+//react
+import { useEffect, useState, useContext } from "react";
+
+//playground
+import { Grid } from "./grid/Grid";
 import UI from "./UI/UI";
-import { useEffect, useState } from "react";
+import UIController from "./UI/UIController";
 
 //! global variables, these may be accessed by classes !//
 export const gridDim = 32;
@@ -22,22 +19,10 @@ export const mainGrid = new Grid(gridDim, gridDim);
 export const scene = new Scene();
 export const debug = true;
 export const bpm = 120;
+export const controller = new UIController();
 
 export const App = () => {
-  //state
-  const [playing, setPlaying] = useState<boolean>(false);
-  const [selectedBlock, setSelectedBlock] = useState<Vector3>();
-
-  //effect hooks
-  useEffect(() => {
-    if (playing) {
-      Transport.start();
-    }
-    if (!playing) {
-      Transport.stop();
-    }
-  }, [playing]);
-  //cam and rendered set up
+  //cam and renderer set up
   const mainCamera = camera();
   const renderer = new WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -61,7 +46,7 @@ export const App = () => {
   // const send5 = mainGrid.blocks[13][13];
   // send5.updateSend(4, new Vector3(-1, 0, 0));
 
-  //constructs meshes and adds event handlers
+  //constructs meshes and adds userData.
   for (let i = 0; i < mainGrid.blocks.length; i++) {
     for (let j = 0; j < mainGrid.blocks[i].length; j++) {
       const mesh = mainGrid.blocks[i][j].mesh;
@@ -71,10 +56,12 @@ export const App = () => {
     }
   }
 
+  //UIController setup
+
   //click controls
   const raycaster = new Raycaster();
   const clickMouse = new Vector2();
-  //const mouseMove = new Vector2();
+  let selectedBlock: Vector3;
   window.addEventListener("click", (event) => {
     clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -83,7 +70,13 @@ export const App = () => {
     if (found.length === 0) return;
     const blocks = found.filter((x) => x.object.userData.name === "Block");
     if (blocks.length === 0) return;
-    setSelectedBlock(blocks[0].object.userData.position);
+
+    const block =
+      mainGrid.blocks[blocks[0].object.userData.position.x][
+        blocks[0].object.userData.position.z
+      ].position;
+    controller.setSelectedBlock(block);
+    // console.log(controller);
   });
 
   // const rayGeo = new SphereGeometry();
