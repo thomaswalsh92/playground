@@ -5,10 +5,10 @@ import DebugPanel from "./DebugPanel";
 import TransportControl from "./TransportControl";
 
 interface IUIProps {
-  selectedBlock?: Vector3;
+  selectedBlockPos?: Vector3;
 }
 
-const UI = ({ selectedBlock }: IUIProps) => {
+const UI = ({ selectedBlockPos }: IUIProps) => {
   return (
     <Paper
       elevation={2}
@@ -19,7 +19,7 @@ const UI = ({ selectedBlock }: IUIProps) => {
       }}
     >
       <TransportControl />
-      <BlockPanel />
+      <BlockPanel selectedBlockPos={selectedBlockPos} />
       <DebugPanel />
     </Paper>
   );
